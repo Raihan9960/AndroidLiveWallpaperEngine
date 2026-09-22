@@ -1,5 +1,10 @@
 package com.antigravity.livewallpaper.presentation.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -22,7 +27,33 @@ fun LiveWallpaperNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = startDestination
+        startDestination = startDestination,
+        enterTransition = {
+            slideIntoContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                animationSpec = tween(durationMillis = 340, easing = FastOutSlowInEasing)
+            ) + fadeIn(animationSpec = tween(durationMillis = 300))
+        },
+        exitTransition = {
+            slideOutOfContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                targetOffset = { fullWidth -> fullWidth / 3 },
+                animationSpec = tween(durationMillis = 340, easing = FastOutSlowInEasing)
+            ) + fadeOut(animationSpec = tween(durationMillis = 260))
+        },
+        popEnterTransition = {
+            slideIntoContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                initialOffset = { fullWidth -> fullWidth / 3 },
+                animationSpec = tween(durationMillis = 340, easing = FastOutSlowInEasing)
+            ) + fadeIn(animationSpec = tween(durationMillis = 300))
+        },
+        popExitTransition = {
+            slideOutOfContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                animationSpec = tween(durationMillis = 340, easing = FastOutSlowInEasing)
+            ) + fadeOut(animationSpec = tween(durationMillis = 260))
+        }
     ) {
         composable(Screen.Gallery.route) {
             val viewModel: GalleryViewModel = hiltViewModel()

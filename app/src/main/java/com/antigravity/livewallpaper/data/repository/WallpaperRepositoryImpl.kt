@@ -88,6 +88,38 @@ class WallpaperRepositoryImpl @Inject constructor(
         preferences.updateParallaxEnabled(enabled)
     }
 
+    override suspend fun updateThemeMode(mode: com.antigravity.livewallpaper.domain.model.AppThemeMode) {
+        preferences.updateThemeMode(mode)
+    }
+
+    override suspend fun updateAccentColorIndex(index: Int) {
+        preferences.updateAccentColorIndex(index)
+    }
+
+    override suspend fun updateVideoScalingMode(mode: Int) {
+        preferences.updateVideoScalingMode(mode)
+    }
+
+    override suspend fun updateAudioEnabled(enabled: Boolean) {
+        preferences.updateAudioEnabled(enabled)
+    }
+
+    override suspend fun updateLowBatteryCutoff(enabled: Boolean) {
+        preferences.updateLowBatteryCutoff(enabled)
+    }
+
+    override suspend fun updateParallaxSensitivity(sensitivity: Float) {
+        preferences.updateParallaxSensitivity(sensitivity)
+    }
+
+    override suspend fun updateDoubleTapAction(enabled: Boolean) {
+        preferences.updateDoubleTapAction(enabled)
+    }
+
+    override suspend fun updateWallpaperScope(scope: com.antigravity.livewallpaper.domain.model.WallpaperScope) {
+        preferences.updateWallpaperScope(scope)
+    }
+
     override suspend fun setOnboardingCompleted(completed: Boolean) {
         preferences.setOnboardingCompleted(completed)
     }

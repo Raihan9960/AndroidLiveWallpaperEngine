@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -26,10 +27,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.ElectricBolt
-import androidx.compose.material.icons.filled.FileDownload
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Tune
+import androidx.compose.material.icons.outlined.VideoLibrary
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -47,7 +46,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -55,16 +53,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.antigravity.livewallpaper.domain.model.Wallpaper
 import com.antigravity.livewallpaper.presentation.gallery.components.WallpaperCard
-import com.antigravity.livewallpaper.presentation.theme.DarkBackground
-import com.antigravity.livewallpaper.presentation.theme.DarkBorder
-import com.antigravity.livewallpaper.presentation.theme.DarkSurface
-import com.antigravity.livewallpaper.presentation.theme.DarkSurfaceVariant
-import com.antigravity.livewallpaper.presentation.theme.NeonCyan
-import com.antigravity.livewallpaper.presentation.theme.NeonEmerald
-import com.antigravity.livewallpaper.presentation.theme.NeonPurple
-import com.antigravity.livewallpaper.presentation.theme.TextMuted
-import com.antigravity.livewallpaper.presentation.theme.TextPrimary
-import com.antigravity.livewallpaper.presentation.theme.TextSecondary
+import com.antigravity.livewallpaper.presentation.theme.AppTheme
 
 @Composable
 fun GalleryScreen(
@@ -75,6 +64,7 @@ fun GalleryScreen(
     val myWallpapers by viewModel.myWallpapers.collectAsState()
     val activeWallpaper by viewModel.activeWallpaper.collectAsState()
     val importState by viewModel.importState.collectAsState()
+    val colors = AppTheme.colors
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -101,24 +91,28 @@ fun GalleryScreen(
     }
 
     Scaffold(
-        containerColor = DarkBackground,
+        containerColor = colors.background,
         snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
                     filePicker.launch(arrayOf("video/*", "image/*"))
                 },
-                containerColor = NeonCyan,
-                contentColor = DarkBackground,
-                shape = RoundedCornerShape(16.dp),
+                containerColor = colors.primary,
+                contentColor = colors.onPrimary,
+                shape = RoundedCornerShape(20.dp),
                 modifier = Modifier.padding(bottom = 8.dp)
             ) {
                 Row(
-                    modifier = Modifier.padding(horizontal = 16.dp),
+                    modifier = Modifier.padding(horizontal = 18.dp, vertical = 4.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Icon(imageVector = Icons.Default.Add, contentDescription = "Import")
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Import",
+                        modifier = Modifier.size(20.dp)
+                    )
                     Text(
                         text = "Import Media",
                         fontWeight = FontWeight.Bold,
@@ -148,14 +142,14 @@ fun GalleryScreen(
                     ) {
                         Text(
                             text = "LIVELY",
-                            color = NeonCyan,
+                            color = colors.primary,
                             fontSize = 22.sp,
                             fontWeight = FontWeight.Black,
                             letterSpacing = 1.sp
                         )
                         Text(
                             text = "ENGINE",
-                            color = TextPrimary,
+                            color = colors.textPrimary,
                             fontSize = 22.sp,
                             fontWeight = FontWeight.Bold,
                             letterSpacing = 1.sp
@@ -163,7 +157,7 @@ fun GalleryScreen(
                     }
                     Text(
                         text = "Zero-Drain Live Wallpapers",
-                        color = TextMuted,
+                        color = colors.textMuted,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium
                     )
@@ -172,14 +166,16 @@ fun GalleryScreen(
                 IconButton(
                     onClick = onNavigateToSettings,
                     modifier = Modifier
+                        .size(42.dp)
                         .clip(CircleShape)
-                        .background(DarkSurfaceVariant)
-                        .border(1.dp, DarkBorder, CircleShape)
+                        .background(colors.surface)
+                        .border(1.dp, colors.border, CircleShape)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Tune,
                         contentDescription = "Settings",
-                        tint = TextPrimary
+                        tint = colors.textPrimary,
+                        modifier = Modifier.size(20.dp)
                     )
                 }
             }
@@ -196,27 +192,27 @@ fun GalleryScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 10.dp),
+                    .padding(horizontal = 20.dp, vertical = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "My Wallpapers",
                     style = MaterialTheme.typography.titleMedium,
-                    color = TextPrimary,
+                    color = colors.textPrimary,
                     fontWeight = FontWeight.Bold,
                     fontSize = 17.sp
                 )
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(12.dp))
-                        .background(DarkSurfaceVariant)
-                        .border(1.dp, DarkBorder, RoundedCornerShape(12.dp))
+                        .background(colors.surfaceVariant)
+                        .border(1.dp, colors.border, RoundedCornerShape(12.dp))
                         .padding(horizontal = 10.dp, vertical = 4.dp)
                 ) {
                     Text(
                         text = "${myWallpapers.size} ${if (myWallpapers.size == 1) "item" else "items"}",
-                        color = NeonCyan,
+                        color = colors.primary,
                         fontSize = 11.sp,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -236,14 +232,15 @@ fun GalleryScreen(
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         CircularProgressIndicator(
-                            color = NeonCyan,
+                            color = colors.primary,
                             modifier = Modifier.size(20.dp),
                             strokeWidth = 2.dp
                         )
                         Text(
                             text = "Processing and caching imported media...",
-                            color = NeonCyan,
-                            fontSize = 13.sp
+                            color = colors.primary,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Medium
                         )
                     }
                 }
@@ -284,79 +281,64 @@ private fun ActiveWallpaperBanner(
     wallpaper: Wallpaper,
     onClick: () -> Unit
 ) {
-    Box(
+    val colors = AppTheme.colors
+
+    Row(
         modifier = Modifier
-            .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 6.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(
-                Brush.horizontalGradient(
-                    listOf(
-                        Color(0xFF132034),
-                        Color(0xFF181C28)
-                    )
-                )
-            )
-            .border(1.dp, Color(0x6000F0FF), RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(50.dp))
+            .background(colors.surface)
+            .border(1.dp, colors.primary.copy(alpha = 0.5f), RoundedCornerShape(50.dp))
             .clickable { onClick() }
-            .padding(horizontal = 16.dp, vertical = 12.dp)
+            .padding(horizontal = 14.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+        Box(
+            modifier = Modifier
+                .size(28.dp)
+                .clip(CircleShape)
+                .background(colors.badgeBackground),
+            contentAlignment = Alignment.Center
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(36.dp)
-                        .clip(CircleShape)
-                        .background(Color(0x2600F0FF)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.CheckCircle,
-                        contentDescription = null,
-                        tint = NeonCyan,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
+            Icon(
+                imageVector = Icons.Default.CheckCircle,
+                contentDescription = null,
+                tint = colors.primary,
+                modifier = Modifier.size(16.dp)
+            )
+        }
 
-                Column {
-                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                        Text(
-                            text = "ACTIVE WALLPAPER",
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = NeonCyan,
-                            letterSpacing = 0.5.sp
-                        )
-                    }
-                    Text(
-                        text = wallpaper.title,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = TextPrimary
-                    )
-                }
-            }
+        Column(modifier = Modifier.widthIn(max = 180.dp)) {
+            Text(
+                text = "ACTIVE WALLPAPER",
+                fontSize = 9.sp,
+                fontWeight = FontWeight.Bold,
+                color = colors.primary,
+                letterSpacing = 0.5.sp
+            )
+            Text(
+                text = wallpaper.title,
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Bold,
+                color = colors.textPrimary,
+                maxLines = 1,
+                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+            )
+        }
 
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(Color(0x3300F0FF))
-                    .padding(horizontal = 10.dp, vertical = 5.dp)
-            ) {
-                Text(
-                    text = "Preview",
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = NeonCyan
-                )
-            }
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(8.dp))
+                .background(colors.badgeBackground)
+                .padding(horizontal = 8.dp, vertical = 4.dp)
+        ) {
+            Text(
+                text = "Preview",
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Bold,
+                color = colors.primary
+            )
         }
     }
 }
@@ -365,6 +347,8 @@ private fun ActiveWallpaperBanner(
 private fun EmptyLibraryView(
     onImportClick: () -> Unit
 ) {
+    val colors = AppTheme.colors
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -375,48 +359,65 @@ private fun EmptyLibraryView(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            // Tactile Empty State Container inspired by UI Materials reference
             Box(
                 modifier = Modifier
-                    .size(72.dp)
-                    .clip(CircleShape)
-                    .background(DarkSurfaceVariant)
-                    .border(1.dp, DarkBorder, CircleShape),
+                    .size(96.dp)
+                    .clip(RoundedCornerShape(24.dp))
+                    .background(colors.surface)
+                    .border(1.dp, colors.border, RoundedCornerShape(24.dp)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    imageVector = Icons.Default.FileDownload,
+                    imageVector = Icons.Outlined.VideoLibrary,
                     contentDescription = null,
-                    tint = NeonCyan,
-                    modifier = Modifier.size(32.dp)
+                    tint = colors.primary,
+                    modifier = Modifier.size(44.dp)
                 )
             }
 
             Text(
                 text = "Your Library is Empty",
                 style = MaterialTheme.typography.titleLarge,
-                color = TextPrimary
+                color = colors.textPrimary,
+                fontWeight = FontWeight.Bold
             )
 
             Text(
-                text = "Import any MP4, MKV, WebM video, animated GIF, or high-res photo from your phone storage to set as a live wallpaper.",
+                text = "Import any MP4, MKV video, animated GIF, or photo from your device storage to set as a live wallpaper.",
                 style = MaterialTheme.typography.bodyMedium,
-                color = TextSecondary,
-                textAlign = TextAlign.Center
+                color = colors.textSecondary,
+                textAlign = TextAlign.Center,
+                lineHeight = 20.sp
             )
 
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Primary pill button from UI Materials
             Box(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(NeonCyan)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(colors.primary)
                     .clickable { onImportClick() }
-                    .padding(horizontal = 20.dp, vertical = 10.dp)
+                    .padding(horizontal = 24.dp, vertical = 12.dp)
             ) {
-                Text(
-                    text = "Pick Media File",
-                    color = DarkBackground,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = null,
+                        tint = colors.onPrimary,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Text(
+                        text = "Pick Media File",
+                        color = colors.onPrimary,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp
+                    )
+                }
             }
         }
     }

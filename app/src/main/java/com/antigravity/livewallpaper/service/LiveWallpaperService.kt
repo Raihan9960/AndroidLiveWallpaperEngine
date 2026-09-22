@@ -1,5 +1,7 @@
 package com.antigravity.livewallpaper.service
 
+import android.app.WallpaperManager
+import android.os.Build
 import android.service.wallpaper.WallpaperService
 import android.util.Log
 import android.view.SurfaceHolder
@@ -129,6 +131,17 @@ class LiveWallpaperService : WallpaperService() {
             if (currentSettings.parallaxEnabled) {
                 renderer?.onOffsetsChanged(xOffset, yOffset, xOffsetStep, yOffsetStep, xPixelOffset, yPixelOffset)
             }
+        }
+
+        override fun onWallpaperFlagsChanged(which: Int) {
+            super.onWallpaperFlagsChanged(which)
+            val scopeStr = when (which) {
+                WallpaperManager.FLAG_SYSTEM -> "HOME"
+                WallpaperManager.FLAG_LOCK -> "LOCK"
+                WallpaperManager.FLAG_SYSTEM or WallpaperManager.FLAG_LOCK -> "BOTH"
+                else -> "FLAG_$which"
+            }
+            Log.d(TAG, "onWallpaperFlagsChanged: surface=$scopeStr")
         }
 
         override fun onDestroy() {

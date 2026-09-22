@@ -1,5 +1,6 @@
 package com.antigravity.livewallpaper
 
+import com.antigravity.livewallpaper.domain.model.AppThemeMode
 import com.antigravity.livewallpaper.domain.model.Wallpaper
 import com.antigravity.livewallpaper.domain.model.WallpaperType
 import com.antigravity.livewallpaper.domain.repository.WallpaperRepository
@@ -31,6 +32,14 @@ class GetWallpapersUseCaseTest {
         override suspend fun updateFrameRateCap(fps: Int) {}
         override suspend fun updateBatterySaverAdaptive(enabled: Boolean) {}
         override suspend fun updateParallaxEnabled(enabled: Boolean) {}
+        override suspend fun updateThemeMode(mode: AppThemeMode) {}
+        override suspend fun updateAccentColorIndex(index: Int) {}
+        override suspend fun updateVideoScalingMode(mode: Int) {}
+        override suspend fun updateAudioEnabled(enabled: Boolean) {}
+        override suspend fun updateLowBatteryCutoff(enabled: Boolean) {}
+        override suspend fun updateParallaxSensitivity(sensitivity: Float) {}
+        override suspend fun updateDoubleTapAction(enabled: Boolean) {}
+        override suspend fun updateWallpaperScope(scope: com.antigravity.livewallpaper.domain.model.WallpaperScope) {}
         override suspend fun setOnboardingCompleted(completed: Boolean) {}
         override suspend fun getCacheSizeBytes() = 0L
         override suspend fun clearCache() = true

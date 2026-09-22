@@ -16,6 +16,14 @@ interface WallpaperRepository {
     suspend fun updateFrameRateCap(fps: Int)
     suspend fun updateBatterySaverAdaptive(enabled: Boolean)
     suspend fun updateParallaxEnabled(enabled: Boolean)
+    suspend fun updateThemeMode(mode: com.antigravity.livewallpaper.domain.model.AppThemeMode)
+    suspend fun updateAccentColorIndex(index: Int)
+    suspend fun updateVideoScalingMode(mode: Int)
+    suspend fun updateAudioEnabled(enabled: Boolean)
+    suspend fun updateLowBatteryCutoff(enabled: Boolean)
+    suspend fun updateParallaxSensitivity(sensitivity: Float)
+    suspend fun updateDoubleTapAction(enabled: Boolean)
+    suspend fun updateWallpaperScope(scope: com.antigravity.livewallpaper.domain.model.WallpaperScope)
     suspend fun setOnboardingCompleted(completed: Boolean)
     suspend fun getCacheSizeBytes(): Long
     suspend fun clearCache(): Boolean

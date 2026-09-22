@@ -1,9 +1,10 @@
 package com.antigravity.livewallpaper.presentation.onboarding
 
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,7 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.BatterySaver
-import androidx.compose.material.icons.filled.LockOpen
+import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material.icons.filled.MovieCreation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -41,75 +42,80 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.antigravity.livewallpaper.presentation.theme.DarkBackground
-import com.antigravity.livewallpaper.presentation.theme.DarkBorder
-import com.antigravity.livewallpaper.presentation.theme.DarkSurface
-import com.antigravity.livewallpaper.presentation.theme.DarkSurfaceVariant
-import com.antigravity.livewallpaper.presentation.theme.NeonCyan
-import com.antigravity.livewallpaper.presentation.theme.NeonEmerald
-import com.antigravity.livewallpaper.presentation.theme.NeonPink
-import com.antigravity.livewallpaper.presentation.theme.TextMuted
-import com.antigravity.livewallpaper.presentation.theme.TextPrimary
-import com.antigravity.livewallpaper.presentation.theme.TextSecondary
+import com.antigravity.livewallpaper.presentation.theme.AppTheme
 
 data class OnboardingPage(
     val title: String,
     val description: String,
     val icon: ImageVector,
-    val accentColor: Color
+    val darkAccent: Color,
+    val lightAccent: Color
 )
 
 @Composable
 fun OnboardingScreen(
     onFinishOnboarding: () -> Unit
 ) {
-    val pages = listOf(
-        OnboardingPage(
-            title = "Zero-Drain Battery Architecture",
-            description = "Engineered with strict visibility guards. The instant your screen locks or any app opens, playback suspends to guarantee 0% idle drain.",
-            icon = Icons.Default.BatterySaver,
-            accentColor = NeonEmerald
-        ),
-        OnboardingPage(
-            title = "Home Screen Focused",
-            description = "Applies specifically to your Home Screen without overriding your Lock Screen photo. Your personal lock screen remains 100% untouched.",
-            icon = Icons.Default.LockOpen,
-            accentColor = NeonCyan
-        ),
-        OnboardingPage(
-            title = "Import Any Video or GIF",
-            description = "Bring any personal MP4, WebM, animated GIF, or high-res photo. Hardware-accelerated decoding keeps playback fluid at full display resolution.",
-            icon = Icons.Default.MovieCreation,
-            accentColor = NeonPink
+    val colors = AppTheme.colors
+
+    val pages = remember {
+        listOf(
+            OnboardingPage(
+                title = "Zero-Drain Battery Architecture",
+                description = "Engineered with strict visibility guards. The instant your screen locks or any app opens, playback suspends to guarantee 0% idle drain.",
+                icon = Icons.Default.BatterySaver,
+                darkAccent = Color(0xFF00F5A0),
+                lightAccent = Color(0xFF0D9488)
+            ),
+            OnboardingPage(
+                title = "Hardware Accelerated",
+                description = "Smooth 60 FPS rendering powered by ExoPlayer hardware codecs, optimized for seamless scrolling and low latency.",
+                icon = Icons.Default.Speed,
+                darkAccent = Color(0xFF00E5FF),
+                lightAccent = Color(0xFF0D5C68)
+            ),
+            OnboardingPage(
+                title = "Import Any Video or GIF",
+                description = "Bring any personal MP4, WebM, animated GIF, or high-res photo. Hardware-accelerated decoding keeps playback fluid at full display resolution.",
+                icon = Icons.Default.MovieCreation,
+                darkAccent = Color(0xFFFF007F),
+                lightAccent = Color(0xFFBE185D)
+            )
         )
-    )
+    }
 
     var currentPage by remember { mutableIntStateOf(0) }
 
     Scaffold(
-        containerColor = DarkBackground
+        containerColor = colors.background
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(28.dp),
+                .padding(horizontal = 28.dp, vertical = 24.dp),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Top Skip Row
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 if (currentPage < pages.size - 1) {
                     Text(
                         text = "Skip",
-                        color = TextMuted,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 14.sp,
+                        color = colors.textMuted,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 15.sp,
                         modifier = Modifier
-                            .clickable { onFinishOnboarding() }
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null
+                            ) { onFinishOnboarding() }
                             .padding(8.dp)
                     )
                 }
@@ -117,31 +123,34 @@ fun OnboardingScreen(
 
             // Center Visual & Text
             val page = pages[currentPage]
+            val accentColor = if (colors.isDark) page.darkAccent else page.lightAccent
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(24.dp)
+                verticalArrangement = Arrangement.spacedBy(24.dp),
+                modifier = Modifier.padding(horizontal = 8.dp)
             ) {
-                // Large Glow Icon
+                // Large Tactile Icon
                 Box(
                     modifier = Modifier
-                        .size(110.dp)
+                        .size(116.dp)
                         .clip(CircleShape)
-                        .background(DarkSurfaceVariant)
-                        .border(2.dp, page.accentColor, CircleShape),
+                        .background(colors.surface)
+                        .border(2.dp, accentColor.copy(alpha = 0.4f), CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = page.icon,
                         contentDescription = null,
-                        tint = page.accentColor,
+                        tint = accentColor,
                         modifier = Modifier.size(54.dp)
                     )
                 }
 
                 Text(
                     text = page.title,
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = TextPrimary,
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = colors.textPrimary,
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold
                 )
@@ -149,7 +158,7 @@ fun OnboardingScreen(
                 Text(
                     text = page.description,
                     style = MaterialTheme.typography.bodyLarge,
-                    color = TextSecondary,
+                    color = colors.textSecondary,
                     textAlign = TextAlign.Center,
                     lineHeight = 24.sp
                 )
@@ -163,7 +172,8 @@ fun OnboardingScreen(
             ) {
                 // Page Indicator Dots
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     pages.indices.forEach { index ->
                         val isSelected = index == currentPage
@@ -172,20 +182,23 @@ fun OnboardingScreen(
                                 .height(8.dp)
                                 .width(if (isSelected) 28.dp else 8.dp)
                                 .clip(RoundedCornerShape(4.dp))
-                                .background(if (isSelected) NeonCyan else DarkSurfaceVariant)
+                                .background(
+                                    if (isSelected) colors.primary else colors.border
+                                )
+                                .animateContentSize()
                         )
                     }
                 }
 
-                // Action Button
+                // Tactile Action Button
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(54.dp)
-                        .clip(RoundedCornerShape(16.dp))
+                        .height(56.dp)
+                        .clip(RoundedCornerShape(20.dp))
                         .background(
                             Brush.horizontalGradient(
-                                listOf(NeonCyan, Color(0xFF00B4D8))
+                                listOf(colors.primary, colors.primaryVariant)
                             )
                         )
                         .clickable {
@@ -203,14 +216,14 @@ fun OnboardingScreen(
                     ) {
                         Text(
                             text = if (currentPage < pages.size - 1) "Continue" else "Get Started",
-                            color = DarkBackground,
-                            fontWeight = FontWeight.Black,
+                            color = colors.onPrimary,
+                            fontWeight = FontWeight.Bold,
                             fontSize = 16.sp
                         )
                         Icon(
                             imageVector = Icons.Default.ArrowForward,
                             contentDescription = null,
-                            tint = DarkBackground,
+                            tint = colors.onPrimary,
                             modifier = Modifier.size(18.dp)
                         )
                     }

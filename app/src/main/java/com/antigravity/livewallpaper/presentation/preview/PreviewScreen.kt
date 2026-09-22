@@ -74,16 +74,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.antigravity.livewallpaper.domain.model.Wallpaper
 import com.antigravity.livewallpaper.domain.model.WallpaperType
-import com.antigravity.livewallpaper.presentation.theme.DarkBackground
-import com.antigravity.livewallpaper.presentation.theme.DarkBorder
-import com.antigravity.livewallpaper.presentation.theme.DarkSurface
-import com.antigravity.livewallpaper.presentation.theme.DarkSurfaceVariant
-import com.antigravity.livewallpaper.presentation.theme.NeonCyan
-import com.antigravity.livewallpaper.presentation.theme.NeonEmerald
-import com.antigravity.livewallpaper.presentation.theme.NeonPurple
-import com.antigravity.livewallpaper.presentation.theme.TextMuted
-import com.antigravity.livewallpaper.presentation.theme.TextPrimary
-import com.antigravity.livewallpaper.presentation.theme.TextSecondary
+import com.antigravity.livewallpaper.presentation.theme.AppTheme
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -94,6 +85,7 @@ fun PreviewScreen(
     val wallpaper by viewModel.wallpaper.collectAsState()
     val applyState by viewModel.applyState.collectAsState()
     val simulateIcons by viewModel.simulateIcons.collectAsState()
+    val colors = AppTheme.colors
 
     var showSuccessDialog by remember { mutableStateOf(false) }
 
@@ -104,7 +96,7 @@ fun PreviewScreen(
     }
 
     Scaffold(
-        containerColor = DarkBackground
+        containerColor = colors.background
     ) { paddingValues ->
         val currentWallpaper = wallpaper
         if (currentWallpaper == null) {
@@ -114,7 +106,7 @@ fun PreviewScreen(
                     .padding(paddingValues),
                 contentAlignment = Alignment.Center
             ) {
-                CircularProgressIndicator(color = NeonCyan)
+                CircularProgressIndicator(color = colors.primary)
             }
             return@Scaffold
         }
@@ -129,30 +121,32 @@ fun PreviewScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                    .padding(horizontal = 20.dp, vertical = 14.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(
                     onClick = onNavigateBack,
                     modifier = Modifier
+                        .size(42.dp)
                         .clip(CircleShape)
-                        .background(DarkSurfaceVariant)
-                        .border(1.dp, DarkBorder, CircleShape)
+                        .background(colors.surface)
+                        .border(1.dp, colors.border, CircleShape)
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Back",
-                        tint = TextPrimary
+                        tint = colors.textPrimary,
+                        modifier = Modifier.size(20.dp)
                     )
                 }
 
-                // Simulate Icons Toggle Button
+                // Simulate Icons Toggle Button (Tactile Pill)
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(20.dp))
-                        .background(if (simulateIcons) NeonCyan else DarkSurfaceVariant)
-                        .border(1.dp, if (simulateIcons) NeonCyan else DarkBorder, RoundedCornerShape(20.dp))
+                        .background(if (simulateIcons) colors.primary else colors.surface)
+                        .border(1.dp, if (simulateIcons) colors.primary else colors.border, RoundedCornerShape(20.dp))
                         .clickable { viewModel.toggleSimulateIcons() }
                         .padding(horizontal = 14.dp, vertical = 8.dp)
                 ) {
@@ -163,12 +157,12 @@ fun PreviewScreen(
                         Icon(
                             imageVector = Icons.Default.Apps,
                             contentDescription = null,
-                            tint = if (simulateIcons) DarkBackground else TextPrimary,
+                            tint = if (simulateIcons) colors.onPrimary else colors.textPrimary,
                             modifier = Modifier.size(16.dp)
                         )
                         Text(
-                            text = if (simulateIcons) "Hide App Icons" else "Test UI Legibility",
-                            color = if (simulateIcons) DarkBackground else TextPrimary,
+                            text = if (simulateIcons) "Hide Icons" else "Test Launcher UI",
+                            color = if (simulateIcons) colors.onPrimary else colors.textPrimary,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -198,7 +192,7 @@ fun PreviewScreen(
                 Text(
                     text = currentWallpaper.title,
                     style = MaterialTheme.typography.headlineMedium,
-                    color = TextPrimary,
+                    color = colors.textPrimary,
                     fontWeight = FontWeight.Bold
                 )
 
@@ -207,7 +201,7 @@ fun PreviewScreen(
                 Text(
                     text = currentWallpaper.description,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = TextSecondary
+                    color = colors.textSecondary
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -227,64 +221,17 @@ fun PreviewScreen(
                         value = currentWallpaper.resolution,
                         modifier = Modifier.weight(1f)
                     )
-                    SpecChip(
-                        title = "Battery",
-                        value = currentWallpaper.batteryImpact.grade,
-                        valueColor = NeonEmerald,
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(14.dp))
-
-                // Home Screen Only Guarantee Banner
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(14.dp))
-                        .background(Color(0xFF131A26))
-                        .border(1.dp, Color(0x4000F0FF), RoundedCornerShape(14.dp))
-                        .padding(14.dp)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.CheckCircle,
-                            contentDescription = null,
-                            tint = NeonCyan,
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Column {
-                            Text(
-                                text = "Home Screen Scoped",
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = NeonCyan
-                            )
-                            Text(
-                                text = "Applies cleanly to your Home Screen. Your Lock Screen remains untouched.",
-                                fontSize = 11.sp,
-                                color = TextSecondary
-                            )
-                        }
-                    }
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Apply Button
+                // Apply Button (Tactile Pill Button)
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(54.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(
-                            Brush.horizontalGradient(
-                                listOf(NeonCyan, Color(0xFF00B4D8))
-                            )
-                        )
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(colors.primary)
                         .clickable(enabled = applyState !is ApplyUiState.Applying) {
                             viewModel.applyWallpaper()
                         },
@@ -292,7 +239,7 @@ fun PreviewScreen(
                 ) {
                     if (applyState is ApplyUiState.Applying) {
                         CircularProgressIndicator(
-                            color = DarkBackground,
+                            color = colors.onPrimary,
                             modifier = Modifier.size(24.dp),
                             strokeWidth = 2.5.dp
                         )
@@ -304,12 +251,12 @@ fun PreviewScreen(
                             Icon(
                                 imageVector = Icons.Default.Check,
                                 contentDescription = null,
-                                tint = DarkBackground,
+                                tint = colors.onPrimary,
                                 modifier = Modifier.size(20.dp)
                             )
                             Text(
-                                text = "Apply to Home Screen",
-                                color = DarkBackground,
+                                text = "Set Wallpaper",
+                                color = colors.onPrimary,
                                 fontWeight = FontWeight.Black,
                                 fontSize = 16.sp,
                                 letterSpacing = 0.5.sp
@@ -332,29 +279,33 @@ fun PreviewScreen(
             title = {
                 Text(
                     text = "Wallpaper Applied!",
-                    color = NeonCyan,
+                    color = colors.primary,
                     fontWeight = FontWeight.Bold
                 )
             },
             text = {
                 Text(
-                    text = "Your live wallpaper has been activated. The system Live Wallpaper picker will confirm 'Home Screen' application.",
-                    color = TextPrimary
+                    text = "Your live wallpaper has been activated.",
+                    color = colors.textPrimary
                 )
             },
             confirmButton = {
-                TextButton(
-                    onClick = {
-                        showSuccessDialog = false
-                        viewModel.resetApplyState()
-                        onNavigateBack()
-                    }
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(colors.primary)
+                        .clickable {
+                            showSuccessDialog = false
+                            viewModel.resetApplyState()
+                            onNavigateBack()
+                        }
+                        .padding(horizontal = 20.dp, vertical = 8.dp)
                 ) {
-                    Text("OK", color = NeonCyan, fontWeight = FontWeight.Bold)
+                    Text("OK", color = colors.onPrimary, fontWeight = FontWeight.Bold)
                 }
             },
-            containerColor = DarkSurface,
-            shape = RoundedCornerShape(18.dp)
+            containerColor = colors.surface,
+            shape = RoundedCornerShape(24.dp)
         )
     }
 }
@@ -364,6 +315,7 @@ private fun PhoneFramePreview(
     wallpaper: Wallpaper,
     simulateIcons: Boolean
 ) {
+    val colors = AppTheme.colors
     val frameShape = RoundedCornerShape(28.dp)
 
     Box(
@@ -372,7 +324,7 @@ private fun PhoneFramePreview(
             .aspectRatio(9f / 18f)
             .clip(frameShape)
             .background(Color.Black)
-            .border(3.dp, DarkBorder, frameShape)
+            .border(3.dp, colors.border, frameShape)
     ) {
         // Active Media Player or Image
         if (wallpaper.type == WallpaperType.VIDEO) {
@@ -555,27 +507,28 @@ private fun MockAppIcon(icon: ImageVector, label: String, tint: Color) {
 private fun SpecChip(
     title: String,
     value: String,
-    valueColor: Color = TextPrimary,
+    valueColor: Color? = null,
     modifier: Modifier = Modifier
 ) {
+    val colors = AppTheme.colors
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(12.dp))
-            .background(DarkSurfaceVariant)
-            .border(1.dp, DarkBorder, RoundedCornerShape(12.dp))
-            .padding(vertical = 10.dp, horizontal = 12.dp)
+            .clip(RoundedCornerShape(14.dp))
+            .background(colors.surface)
+            .border(1.dp, colors.border, RoundedCornerShape(14.dp))
+            .padding(vertical = 12.dp, horizontal = 12.dp)
     ) {
         Column {
             Text(
                 text = title,
-                color = TextMuted,
+                color = colors.textMuted,
                 fontSize = 10.sp,
                 fontWeight = FontWeight.SemiBold
             )
-            Spacer(modifier = Modifier.height(2.dp))
+            Spacer(modifier = Modifier.height(3.dp))
             Text(
                 text = value,
-                color = valueColor,
+                color = valueColor ?: colors.textPrimary,
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Bold
             )
